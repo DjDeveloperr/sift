@@ -49,10 +49,11 @@ export interface Routes {
  * The route handler declared for `404` will be used to serve all
  * requests that do not have a route handler declared.
  */
-export function serve(userRoutes: Routes): void {
+export function serve(userRoutes: Routes, ignore: string[] = []): void {
   routes = { ...routes, ...userRoutes };
   // deno-lint-ignore no-explicit-any
   addEventListener("fetch", (event: any) => {
+    if (ignore.includes(new URL(event.request.url).pathname)) return;
     event.respondWith(handleRequest(event.request, routes));
   });
 }
